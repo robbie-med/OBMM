@@ -4,1002 +4,777 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GBS Prophylaxis System Failure — M&M</title>
+<title>GBS Prophylaxis — OB M&M</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0f2444;
-    --navy-mid: #1a3a6e;
-    --blue: #1e4fa0;
-    --red: #b82c2c;
-    --gold: #c8922a;
-    --slate: #4a5c7a;
-    --mist: #e8edf5;
-    --white: #ffffff;
-    --text: #1a1a2e;
-    --light-text: #4a5568;
-    --rule: #cdd5e0;
+    --navy:      #0f2444;
+    --navy-mid:  #1a3a6e;
+    --blue:      #1e4fa0;
+    --red:       #b82c2c;
+    --gold:      #c8922a;
+    --slate:     #4a5c7a;
+    --mist:      #eef1f8;
+    --rule:      #d0d8e8;
+    --text:      #141824;
+    --light:     #4a5568;
+    --white:     #ffffff;
   }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
+- { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-font-family: ‘DM Sans’, sans-serif;
-background: #0a0e1a;
-overflow: hidden;
-height: 100vh;
-width: 100vw;
-cursor: default;
-user-select: none;
+font-family:‘DM Sans’,sans-serif;
+background:#080c18;
+overflow:hidden;
+height:100vh; width:100vw;
+user-select:none;
 }
 
-/* ── SLIDE SYSTEM ── */
-.deck {
-position: relative;
-width: 100vw;
-height: 100vh;
-}
+.deck { position:relative; width:100vw; height:100vh; }
 
 .slide {
-position: absolute;
-inset: 0;
-display: flex;
-flex-direction: column;
-opacity: 0;
-pointer-events: none;
-transition: opacity 0.35s ease;
+position:absolute; inset:0;
+display:flex; flex-direction:column;
+opacity:0; pointer-events:none;
+transition:opacity .3s ease;
 }
+.slide.active { opacity:1; pointer-events:all; }
 
-.slide.active {
-opacity: 1;
-pointer-events: all;
-}
-
-/* ── NAV ── */
 #nav {
-position: fixed;
-bottom: 24px;
-left: 50%;
-transform: translateX(-50%);
-display: flex;
-align-items: center;
-gap: 16px;
-background: rgba(15,36,68,0.88);
-backdrop-filter: blur(8px);
-border: 1px solid rgba(255,255,255,0.12);
-border-radius: 40px;
-padding: 8px 20px;
-z-index: 999;
+position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+display:flex; align-items:center; gap:14px;
+background:rgba(10,20,50,.88); backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,.12); border-radius:40px;
+padding:7px 18px; z-index:999;
 }
-
 #nav button {
-background: none;
-border: none;
-color: rgba(255,255,255,0.7);
-font-size: 20px;
-cursor: pointer;
-padding: 4px 10px;
-border-radius: 20px;
-transition: color 0.2s, background 0.2s;
-font-family: inherit;
+background:none; border:none; color:rgba(255,255,255,.6);
+font-size:18px; cursor:pointer; padding:4px 10px;
+border-radius:20px; transition:all .2s; font-family:inherit;
+}
+#nav button:hover { color:white; background:rgba(255,255,255,.1); }
+#slide-counter { font-size:12px; color:rgba(255,255,255,.45); min-width:54px; text-align:center; letter-spacing:.06em; }
+#prog-dots { display:flex; gap:5px; align-items:center; }
+.dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.22); cursor:pointer; transition:all .25s; }
+.dot.active { background:rgba(200,146,42,.9); transform:scale(1.5); }
+
+.bp-badge {
+position:fixed; top:18px; right:22px;
+background:rgba(184,44,44,.18); border:1px solid rgba(184,44,44,.4);
+color:#e07070; font-size:10px; font-weight:700; letter-spacing:.14em;
+text-transform:uppercase; padding:5px 14px; border-radius:20px; z-index:998; display:none;
 }
 
-#nav button:hover { color: white; background: rgba(255,255,255,0.1); }
-
-#slide-counter {
-font-family: ‘DM Sans’, sans-serif;
-font-size: 13px;
-font-weight: 500;
-color: rgba(255,255,255,0.55);
-min-width: 60px;
-text-align: center;
-letter-spacing: 0.05em;
-}
-
-#progress-dots {
-display: flex;
-gap: 6px;
-align-items: center;
-}
-
-.dot {
-width: 6px;
-height: 6px;
-border-radius: 50%;
-background: rgba(255,255,255,0.25);
-transition: background 0.3s, transform 0.3s;
-}
-
-.dot.active {
-background: rgba(200,146,42,0.9);
-transform: scale(1.4);
-}
-
-.back-pocket-badge {
-position: fixed;
-top: 20px;
-right: 24px;
-background: rgba(184,44,44,0.18);
-border: 1px solid rgba(184,44,44,0.45);
-color: #e07070;
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 0.12em;
-text-transform: uppercase;
-padding: 5px 14px;
-border-radius: 20px;
-z-index: 998;
-display: none;
-}
-
-/* ── SLIDE 1: TITLE ── */
-#s1 {
-background: var(–navy);
+/* ── BASE STYLES ── */
+.dark {
+background:var(–navy);
 background-image:
-radial-gradient(ellipse 80% 60% at 20% 30%, rgba(30,79,160,0.35) 0%, transparent 60%),
-radial-gradient(ellipse 50% 50% at 80% 80%, rgba(200,146,42,0.12) 0%, transparent 50%),
-repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,0.025) 60px),
-repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.025) 60px);
-justify-content: center;
-align-items: flex-start;
-padding: 80px 100px;
+radial-gradient(ellipse 75% 60% at 18% 28%, rgba(30,79,160,.32) 0%, transparent 58%),
+radial-gradient(ellipse 45% 45% at 82% 78%, rgba(200,146,42,.1) 0%, transparent 50%);
 }
+.light { background:var(–white); padding:48px 84px 80px; }
 
-.title-rule {
-width: 60px;
-height: 3px;
-background: var(–gold);
-margin-bottom: 28px;
-}
+.sh { display:flex; align-items:flex-start; gap:18px; margin-bottom:32px; padding-bottom:18px; border-bottom:1.5px solid var(–rule); }
+.sh-num { font-family:‘Crimson Pro’,serif; font-size:12px; color:var(–gold); font-weight:700; letter-spacing:.1em; padding-top:4px; min-width:24px; }
+.sh-title { font-family:‘Crimson Pro’,serif; font-size:36px; font-weight:700; color:var(–navy); line-height:1.12; flex:1; }
+.sh-sub { font-size:12px; font-weight:600; color:var(–slate); letter-spacing:.12em; text-transform:uppercase; align-self:flex-end; }
 
-.title-eyebrow {
-font-family: ‘DM Sans’, sans-serif;
-font-size: 13px;
-font-weight: 600;
-letter-spacing: 0.18em;
-text-transform: uppercase;
-color: var(–gold);
-margin-bottom: 20px;
-}
+.dsh { display:flex; align-items:flex-start; gap:18px; margin-bottom:30px; padding-bottom:18px; border-bottom:1.5px solid rgba(255,255,255,.12); }
+.dsh .sh-num { color:var(–gold); }
+.dsh .sh-title { color:white; }
+.dsh .sh-sub { color:rgba(255,255,255,.35); }
 
-.title-main {
-font-family: ‘Crimson Pro’, serif;
-font-size: 68px;
-font-weight: 700;
-color: white;
-line-height: 1.08;
-max-width: 780px;
-margin-bottom: 28px;
-}
-
-.title-main em {
-font-style: italic;
-color: #7fa8e8;
-}
-
-.title-sub {
-font-size: 20px;
-color: rgba(255,255,255,0.55);
-font-weight: 300;
-letter-spacing: 0.02em;
-margin-bottom: 52px;
-}
-
-.title-tags {
-display: flex;
-gap: 12px;
-flex-wrap: wrap;
-}
-
-.tag {
-padding: 6px 16px;
-border: 1px solid rgba(255,255,255,0.2);
-border-radius: 20px;
-font-size: 13px;
-color: rgba(255,255,255,0.65);
-letter-spacing: 0.03em;
-}
-
-.tag.error {
-border-color: rgba(184,44,44,0.5);
-background: rgba(184,44,44,0.12);
-color: #e07070;
-}
-
-.title-footer {
-position: absolute;
-bottom: 40px;
-right: 80px;
-text-align: right;
-font-size: 12px;
-color: rgba(255,255,255,0.25);
-font-weight: 300;
-letter-spacing: 0.04em;
-line-height: 1.8;
-}
-
-/* ── LIGHT SLIDE BASE ── */
-.slide-light {
-background: var(–white);
-padding: 60px 90px 90px;
-}
-
-.slide-header {
-display: flex;
-align-items: flex-start;
-gap: 20px;
-margin-bottom: 46px;
-border-bottom: 1.5px solid var(–rule);
-padding-bottom: 22px;
-}
-
-.slide-number {
-font-family: ‘Crimson Pro’, serif;
-font-size: 13px;
-color: var(–gold);
-font-weight: 600;
-letter-spacing: 0.1em;
-min-width: 28px;
-padding-top: 3px;
-}
-
-.slide-title {
-font-family: ‘Crimson Pro’, serif;
-font-size: 38px;
-font-weight: 700;
-color: var(–navy);
-line-height: 1.15;
-flex: 1;
-}
-
-.slide-subtitle {
-font-size: 13px;
-font-weight: 500;
-color: var(–slate);
-letter-spacing: 0.12em;
-text-transform: uppercase;
-align-self: flex-end;
-}
-
-/* ── DARK SLIDE BASE ── */
-.slide-dark {
-background: var(–navy);
-background-image: radial-gradient(ellipse 70% 70% at 90% 90%, rgba(30,79,160,0.25) 0%, transparent 60%);
-padding: 60px 90px 90px;
-}
-
-.slide-dark .slide-title { color: white; }
-.slide-dark .slide-header { border-color: rgba(255,255,255,0.15); }
-.slide-dark .slide-number { color: var(–gold); }
-
-/* ── BULLET LIST ── */
-.bullet-list {
-list-style: none;
-display: flex;
-flex-direction: column;
-gap: 18px;
-}
-
-.bullet-list li {
-display: flex;
-align-items: flex-start;
-gap: 14px;
-font-size: 22px;
-line-height: 1.5;
-color: var(–text);
-}
-
-.bullet-list li::before {
-content: ‘’;
-width: 6px;
-height: 6px;
-border-radius: 50%;
-background: var(–gold);
-flex-shrink: 0;
-margin-top: 10px;
-}
-
-.bullet-list.dark li { color: rgba(255,255,255,0.85); }
-.bullet-list.dark li::before { background: var(–gold); }
-
-.bullet-list li strong { color: var(–navy); font-weight: 600; }
-.bullet-list.dark li strong { color: #7fa8e8; }
-
-.bullet-list li .error-label {
-display: inline-block;
-padding: 2px 10px;
-background: rgba(184,44,44,0.1);
-border: 1px solid rgba(184,44,44,0.3);
-border-radius: 12px;
-color: var(–red);
-font-size: 13px;
-font-weight: 600;
-letter-spacing: 0.04em;
-margin-left: 6px;
-vertical-align: middle;
-}
-
-/* ── TIMELINE (journal style) ── */
-.timeline-wrap {
-flex: 1;
-display: flex;
-flex-direction: column;
-justify-content: center;
-}
-
-svg.timeline-svg {
-width: 100%;
-overflow: visible;
-}
+/* ── CASE BLOCKS ── */
+.case-grid { display:grid; grid-template-columns:1fr 1.05fr; gap:18px; flex:1; }
+.case-col { display:flex; flex-direction:column; gap:12px; }
+.case-block { background:var(–mist); border-radius:8px; padding:16px 20px; }
+.case-block h3 { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(–slate); margin-bottom:9px; }
+.case-block ul { list-style:none; display:flex; flex-direction:column; gap:4px; }
+.case-block ul li { font-size:16px; line-height:1.6; color:var(–text); }
+.case-block ul li::before { content:’· ’; color:var(–gold); font-weight:700; }
+.case-block p { font-size:16px; line-height:1.7; color:var(–text); }
+.case-block.error { border-left:4px solid var(–red); background:rgba(184,44,44,.05); }
+.case-block.error h3 { color:var(–red); }
+.case-block.ok { border-left:4px solid #2a7a5a; }
+.case-block.ok h3 { color:#2a7a5a; }
+.case-block.warn { border-left:4px solid var(–gold); background:#fdf8ee; }
+.case-block.warn h3 { color:#7a5010; }
 
 /* ── QI GRID ── */
-.qi-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 20px;
-margin-top: 4px;
-}
-
-.qi-card {
-background: var(–mist);
-border-left: 4px solid var(–blue);
-border-radius: 0 8px 8px 0;
-padding: 22px 24px;
-}
-
-.qi-card h3 {
-font-family: ‘Crimson Pro’, serif;
-font-size: 19px;
-font-weight: 700;
-color: var(–navy);
-margin-bottom: 8px;
-}
-
-.qi-card p {
-font-size: 15px;
-color: var(–light-text);
-line-height: 1.6;
-}
-
-.qi-card.action { border-color: var(–gold); }
-.qi-card.process { border-color: var(–blue); }
-.qi-card.tech { border-color: #2a7a5a; }
-.qi-card.edu { border-color: var(–red); }
+.qi-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; flex:1; }
+.qi-card { border-radius:8px; padding:22px 24px; }
+.qi-card h3 { font-family:‘Crimson Pro’,serif; font-size:19px; font-weight:700; margin-bottom:8px; }
+.qi-card p { font-size:15px; line-height:1.65; color:var(–light); }
+.qi-card.c-blue { background:var(–mist); border-left:4px solid var(–blue); }
+.qi-card.c-blue h3 { color:var(–navy); }
+.qi-card.c-gold { background:#fdf8ee; border-left:4px solid var(–gold); }
+.qi-card.c-gold h3 { color:#7a5010; }
+.qi-card.c-green { background:#edf6f0; border-left:4px solid #2a7a5a; }
+.qi-card.c-green h3 { color:#1a5038; }
+.qi-card.c-red { background:#fdf0f0; border-left:4px solid var(–red); }
+.qi-card.c-red h3 { color:#7a1a1a; }
 
 /* ── TAKEAWAY CARDS ── */
-.takeaway-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 16px;
-}
+.take-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; flex:1; }
+.take-card { background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:24px 22px; }
+.take-card .ic { font-size:26px; display:block; margin-bottom:10px; }
+.take-card h3 { font-family:‘Crimson Pro’,serif; font-size:19px; font-weight:600; color:white; margin-bottom:7px; line-height:1.3; }
+.take-card p { font-size:14px; color:rgba(255,255,255,.58); line-height:1.65; }
 
-.takeaway-card {
-background: rgba(255,255,255,0.06);
-border: 1px solid rgba(255,255,255,0.12);
-border-radius: 10px;
-padding: 28px 26px;
-}
+/* ── LIT CARDS ── */
+.lit-card { background:var(–mist); border-radius:8px; padding:22px 28px; margin-bottom:14px; border-left:5px solid var(–navy-mid); position:relative; }
+.lit-card .cite-label { font-family:‘Crimson Pro’,serif; font-style:italic; font-size:13px; color:var(–slate); margin-bottom:8px; }
+.lit-card .find { font-size:18px; line-height:1.65; color:var(–text); }
+.lit-card .find strong { color:var(–navy); }
+.lit-badge { position:absolute; top:16px; right:16px; background:var(–navy); color:white; font-size:10px; font-weight:700; letter-spacing:.07em; padding:3px 11px; border-radius:14px; }
 
-.takeaway-card .icon {
-font-size: 28px;
-margin-bottom: 12px;
-display: block;
-}
+/* ── STATS SLIDE ── */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
+.stat-box { background:var(–mist); border-radius:10px; padding:22px 16px; text-align:center; }
+.stat-box .num { font-family:‘Crimson Pro’,serif; font-size:52px; font-weight:700; color:var(–navy); line-height:1; }
+.stat-box .lbl { font-size:12px; font-weight:600; color:var(–slate); letter-spacing:.08em; text-transform:uppercase; margin-top:6px; }
+.stat-box.red .num { color:var(–red); }
+.stat-box.gold .num { color:var(–gold); }
 
-.takeaway-card h3 {
-font-family: ‘Crimson Pro’, serif;
-font-size: 20px;
-font-weight: 600;
-color: white;
-margin-bottom: 8px;
-line-height: 1.3;
-}
+/* ── VANC TABLE ── */
+.vanc-tbl { width:100%; border-collapse:collapse; font-size:15px; margin-top:10px; }
+.vanc-tbl th { background:rgba(200,146,42,.15); color:var(–gold); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:10px 16px; text-align:left; border-bottom:1px solid rgba(200,146,42,.3); }
+.vanc-tbl td { padding:12px 16px; color:rgba(255,255,255,.8); border-bottom:1px solid rgba(255,255,255,.06); line-height:1.5; }
+.vanc-tbl tr:last-child td { border-bottom:none; }
+.vanc-tbl td:first-child { color:rgba(255,255,255,.45); font-size:13px; font-weight:600; }
+.hl td { background:rgba(200,146,42,.08); }
+.hl td:first-child { color:var(–gold); }
 
-.takeaway-card p {
-font-size: 15px;
-color: rgba(255,255,255,0.6);
-line-height: 1.6;
-}
+/* ── TITLE ── */
+.title-pad { padding:72px 96px; display:flex; flex-direction:column; justify-content:center; height:100%; }
+.t-rule { width:52px; height:3px; background:var(–gold); margin-bottom:24px; }
+.t-eyebrow { font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(–gold); margin-bottom:18px; }
+.t-main { font-family:‘Crimson Pro’,serif; font-size:64px; font-weight:700; color:white; line-height:1.08; max-width:720px; margin-bottom:22px; }
+.t-main em { font-style:italic; color:#7fa8e8; }
+.t-sub { font-size:19px; color:rgba(255,255,255,.5); font-weight:300; margin-bottom:44px; }
+.t-tags { display:flex; gap:10px; flex-wrap:wrap; }
+.t-tag { padding:5px 14px; border:1px solid rgba(255,255,255,.18); border-radius:20px; font-size:12px; color:rgba(255,255,255,.6); }
+.t-tag.err { border-color:rgba(184,44,44,.5); background:rgba(184,44,44,.12); color:#e07070; }
+.t-footer { position:absolute; bottom:36px; right:72px; text-align:right; font-size:11px; color:rgba(255,255,255,.2); line-height:1.9; }
 
-/* ── BACK POCKET DARK ── */
-.bp-label {
-display: inline-block;
-background: rgba(184,44,44,0.15);
-border: 1px solid rgba(184,44,44,0.4);
-color: #e07070;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.14em;
-text-transform: uppercase;
-padding: 4px 12px;
-border-radius: 12px;
-margin-bottom: 8px;
-}
+/* citations slide */
+.cite-list { list-style:none; display:flex; flex-direction:column; gap:16px; }
+.cite-list li { font-size:14px; line-height:1.75; color:var(–light); padding-left:18px; position:relative; }
+.cite-list li::before { content:’’; position:absolute; left:0; top:8px; width:6px; height:6px; border-radius:50%; background:var(–gold); }
 
-.vanc-table {
-width: 100%;
-border-collapse: collapse;
-font-size: 17px;
-margin-top: 8px;
-}
-
-.vanc-table th {
-background: rgba(200,146,42,0.15);
-color: var(–gold);
-font-weight: 600;
-font-size: 13px;
-letter-spacing: 0.08em;
-text-transform: uppercase;
-padding: 12px 20px;
-text-align: left;
-border-bottom: 1px solid rgba(200,146,42,0.3);
-}
-
-.vanc-table td {
-padding: 14px 20px;
-color: rgba(255,255,255,0.82);
-border-bottom: 1px solid rgba(255,255,255,0.06);
-line-height: 1.5;
-}
-
-.vanc-table tr:last-child td { border-bottom: none; }
-.vanc-table td:first-child { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 500; }
-
-.highlight-row td { background: rgba(200,146,42,0.07); }
-.highlight-row td:first-child { color: var(–gold); }
-
-/* LIT REVIEW */
-.lit-card {
-background: var(–mist);
-border-radius: 10px;
-padding: 30px 34px;
-margin-bottom: 16px;
-position: relative;
-border-left: 5px solid var(–navy-mid);
-}
-
-.lit-card .citation {
-font-family: ‘Crimson Pro’, serif;
-font-size: 14px;
-font-style: italic;
-color: var(–slate);
-margin-bottom: 10px;
-}
-
-.lit-card .finding {
-font-size: 19px;
-line-height: 1.6;
-color: var(–text);
-}
-
-.lit-card .finding strong { color: var(–navy); }
-
-.lit-grade {
-position: absolute;
-top: 20px;
-right: 20px;
-background: var(–navy);
-color: white;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.08em;
-padding: 4px 12px;
-border-radius: 20px;
-}
-
-/* ── FLOWCHART SLIDE ── */
-.flowchart-wrap {
-flex: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-}
-
-/* ── Responsive ── */
-@media (max-width: 900px) {
-.title-main { font-size: 42px; }
-.slide-light, .slide-dark { padding: 40px 48px 80px; }
-}
+.bp-label { display:inline-block; background:rgba(184,44,44,.1); border:1px solid rgba(184,44,44,.35); color:#e07070; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:4px 12px; border-radius:12px; }
 </style>
 
 </head>
 <body>
 
-<!-- NAVIGATION -->
-
 <div id="nav">
   <button onclick="prev()">&#8592;</button>
-  <div id="progress-dots"></div>
-  <span id="slide-counter">1 / 9</span>
+  <div id="prog-dots"></div>
+  <span id="slide-counter">1 / 12</span>
   <button onclick="next()">&#8594;</button>
 </div>
-<div class="back-pocket-badge" id="bp-badge">&#128193; Back Pocket</div>
+<div class="bp-badge" id="bp-badge">&#128193; Back Pocket</div>
 
 <div class="deck">
 
-<!-- ═══════════════════════════════════════ SLIDE 1 — TITLE ══ -->
+<!-- ═══ S1 — TITLE ═══ -->
 
-<section class="slide active" id="s1">
-  <div style="display:flex;flex-direction:column;justify-content:center;height:100%;padding:80px 100px;">
-    <div class="title-rule"></div>
-    <div class="title-eyebrow">Morbidity &amp; Mortality Conference</div>
-    <div class="title-main">GBS Prophylaxis<br><em>System Failure</em></div>
-    <div class="title-sub">Penicillin Allergy &bull; Missing Susceptibilities &bull; Postpartum Endometritis</div>
-    <div class="title-tags">
-      <span class="tag error">&#9656; Main Error: Susceptibility testing not performed</span>
-      <span class="tag">23yo G3P2 &bull; 37w5d</span>
-      <span class="tag">High-risk PCN Allergy</span>
-      <span class="tag">GBS Positive</span>
+<section class="slide dark active" id="s1">
+  <div class="title-pad">
+    <div class="t-rule"></div>
+    <div class="t-eyebrow">OB Morbidity &amp; Mortality Conference</div>
+    <div class="t-main">GBS Prophylaxis<br><em>System Failure</em></div>
+    <div class="t-sub">Penicillin Allergy &bull; Missing Susceptibilities &bull; Postpartum Endometritis</div>
+    <div class="t-tags">
+      <span class="t-tag err">&#9656;&nbsp;Main error: susceptibility testing not performed</span>
+      <span class="t-tag">23yo G3P2 &bull; 37.5 weeks</span>
+      <span class="t-tag">Severe PCN anaphylaxis</span>
+      <span class="t-tag">GBS positive</span>
     </div>
   </div>
-  <div class="title-footer">
-    Morbidity &amp; Mortality Conference<br>
-    FMIS / OB Grand Rounds
+  <div class="t-footer">OB M&amp;M&amp;M &mdash; FMIS / OB Grand Rounds</div>
+</section>
+
+<!-- ═══ S2 — MONTHLY STATS (OB MMM required) ═══ -->
+
+<section class="slide light" id="s2">
+  <div class="sh">
+    <div class="sh-num">02</div>
+    <div class="sh-title">Numbers for the Month</div>
+    <div class="sh-sub">OB M&amp;M Required Slide</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="num">—</div>
+      <div class="lbl">Total Deliveries</div>
+    </div>
+    <div class="stat-box gold">
+      <div class="num">—</div>
+      <div class="lbl">Cesarean Rate</div>
+    </div>
+    <div class="stat-box red">
+      <div class="num">—</div>
+      <div class="lbl">Maternal Complications</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">—</div>
+      <div class="lbl">GBS+ Patients</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;padding:16px 22px;background:#fdf8ee;border-radius:8px;border-left:4px solid var(--gold);">
+    <div style="font-size:26px;">📋</div>
+    <div style="font-size:15px;color:var(--light);line-height:1.6;"><strong style="color:var(--navy);">Fill in before presenting.</strong> Obtain monthly stats from charge nurse or OB dashboard prior to M&amp;M date.</div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════ SLIDE 2 — CASE OVERVIEW ══ -->
+<!-- ═══ S3 — HISTORY ═══ -->
 
-<section class="slide slide-light" id="s2">
-  <div class="slide-header">
-    <div class="slide-number">02</div>
-    <div class="slide-title">Brief Hospital Course</div>
-    <div class="slide-subtitle">5 min</div>
+<section class="slide light" id="s3">
+  <div class="sh">
+    <div class="sh-num">03</div>
+    <div class="sh-title">History &amp; Presentation</div>
+    <div class="sh-sub">5 min</div>
   </div>
-  <div class="timeline-wrap">
-    <svg class="timeline-svg" viewBox="0 0 1100 340" xmlns="http://www.w3.org/2000/svg">
+  <div class="case-grid">
+    <div class="case-col">
+      <div class="case-block">
+        <h3>Patient</h3>
+        <ul>
+          <li>23-year-old, G3P2</li>
+          <li>37.5 weeks by LMP and 2T ultrasound</li>
+          <li>Presented to OBER in <strong>active labor</strong></li>
+          <li>Admission exam: <strong>7 cm / 90% / 0 station</strong></li>
+        </ul>
+      </div>
+      <div class="case-block warn">
+        <h3>Allergy — High Risk</h3>
+        <ul>
+          <li>Documented <strong>severe anaphylactic allergy</strong> to penicillin</li>
+          <li>Symptoms: hives and shortness of breath</li>
+          <li>Classifies as <strong>high-risk</strong> per ACOG 2020</li>
+        </ul>
+      </div>
+      <div class="case-block">
+        <h3>Admission Labs</h3>
+        <ul>
+          <li>GBS: <strong>Positive</strong></li>
+          <li>WBC: 15.2</li>
+          <li>Rh positive, rubella immune</li>
+        </ul>
+      </div>
+    </div>
+    <div class="case-col">
+      <div class="case-block error">
+        <h3>The Problem</h3>
+        <ul>
+          <li>Susceptibilities had been <strong>ordered outpatient</strong> at time of GBS screen</li>
+          <li>Electronic Cerner order placed — <strong>"penicillin allergy"</strong> entered in sensitivities field</li>
+          <li>On labor admission: <strong>susceptibilities not available</strong></li>
+          <li>Lab contacted — provided no clear explanation</li>
+          <li>Root cause: <strong>lab did not process susceptibility testing</strong> despite electronic order</li>
+        </ul>
+      </div>
+      <div class="case-block ok">
+        <h3>Intrapartum Management</h3>
+        <ul>
+          <li>Vancomycin 2 g IV given for intrapartum prophylaxis (×1)</li>
+          <li>AROM delayed until SROM</li>
+          <li>~3.5 hours of prophylaxis prior to delivery</li>
+          <li>Spontaneous vaginal delivery — healthy newborn</li>
+          <li>Apgars 8 &amp; 9 &bull; Birth weight 2970 g &bull; EBL 100 mL</li>
+        </ul>
+      </div>
+      <div class="case-block error">
+        <h3>Postpartum Complication</h3>
+        <ul>
+          <li>Abdominal pain &rarr; <strong>endometritis</strong></li>
+          <li>Started on clindamycin + gentamicin</li>
+          <li>UA contaminated &bull; 2× blood cultures ordered</li>
+          <li>Clinically improved; discharged <em>without</em> antibiotics</li>
+          <li>Doing well at postpartum follow-up</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4 — TIMELINE ═══ -->
+
+<section class="slide light" id="s4">
+  <div class="sh">
+    <div class="sh-num">04</div>
+    <div class="sh-title">Clinical Timeline</div>
+    <div class="sh-sub">Sequence of Events</div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;">
+    <svg viewBox="0 0 1060 310" width="100%" style="max-height:270px;overflow:visible" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
-          <polygon points="0 0, 8 3.5, 0 7" fill="#1a3a6e"/>
+          <polygon points="0 0,8 3.5,0 7" fill="#1a3a6e"/>
         </marker>
       </defs>
 
 ```
-  <!-- Spine -->
-  <line x1="60" y1="172" x2="1070" y2="172" stroke="#1a3a6e" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="48" y1="152" x2="1030" y2="152" stroke="#1a3a6e" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <!-- ── EVENT 1: 36w swab ── -->
-  <circle cx="120" cy="172" r="9" fill="#1e4fa0"/>
-  <line x1="120" y1="163" x2="120" y2="96" stroke="#cdd5e0" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <text x="120" y="86" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0f2444">36 – 37 weeks</text>
-  <text x="120" y="104" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">GBS swab collected</text>
-  <text x="120" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">Susceptibility requested</text>
+  <!-- Phase labels -->
+  <text x="70" y="172" font-family="Crimson Pro,serif" font-size="11" fill="#aab4c8" font-style="italic">Antepartum</text>
+  <text x="530" y="172" font-family="Crimson Pro,serif" font-size="11" fill="#aab4c8" font-style="italic">Peripartum</text>
+  <text x="860" y="172" font-family="Crimson Pro,serif" font-size="11" fill="#aab4c8" font-style="italic">Postpartum</text>
 
-  <!-- ── EVENT 2: Lab error ── -->
-  <circle cx="290" cy="172" r="12" fill="#b82c2c"/>
-  <text x="290" y="177" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="white">!</text>
-  <line x1="290" y1="184" x2="290" y2="248" stroke="#b82c2c" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <rect x="190" y="252" width="200" height="54" rx="6" fill="rgba(184,44,44,0.08)" stroke="#b82c2c" stroke-width="1.2"/>
-  <text x="290" y="272" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="#b82c2c">LAB PROCESS ERROR</text>
-  <text x="290" y="289" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">Send-out form not transmitted</text>
-  <text x="290" y="305" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">No susceptibility testing performed</text>
+  <!-- E1: GBS swab -->
+  <circle cx="108" cy="152" r="8" fill="#1e4fa0"/>
+  <line x1="108" y1="144" x2="108" y2="82" stroke="#d0d8e8" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <text x="108" y="72" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0f2444">36–37 wks</text>
+  <text x="108" y="88" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">GBS swab collected</text>
+  <text x="108" y="103" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#2a7a5a" font-weight="600">Susceptibility ordered ✓</text>
+  <text x="108" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">"PCN allergy" in field</text>
 
-  <!-- ── EVENT 3: Result returned ── -->
-  <circle cx="460" cy="172" r="9" fill="#1e4fa0"/>
-  <line x1="460" y1="163" x2="460" y2="96" stroke="#cdd5e0" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <text x="460" y="86" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0f2444">Lab Result</text>
-  <text x="460" y="104" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">GBS+ reported</text>
-  <text x="460" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c">No susceptibilities</text>
-  <text x="460" y="136" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">No EMR alert triggered</text>
+  <!-- E2: Lab error -->
+  <circle cx="278" cy="152" r="11" fill="#b82c2c"/>
+  <text x="278" y="157" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="white">!</text>
+  <line x1="278" y1="163" x2="278" y2="222" stroke="#b82c2c" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <rect x="188" y="226" width="182" height="52" rx="6" fill="rgba(184,44,44,.07)" stroke="#b82c2c" stroke-width="1.2"/>
+  <text x="279" y="246" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="#b82c2c">LAB PROCESS ERROR</text>
+  <text x="279" y="263" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">Susceptibilities not performed</text>
+  <text x="279" y="278" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">Root cause under investigation</text>
 
-  <!-- ── EVENT 4: Admission 37w5d ── -->
-  <circle cx="620" cy="172" r="9" fill="#1e4fa0"/>
-  <line x1="620" y1="184" x2="620" y2="248" stroke="#cdd5e0" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <text x="620" y="268" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0f2444">37w5d Admission</text>
-  <text x="620" y="286" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">Active labor</text>
-  <text x="620" y="302" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">Missing susc. discovered</text>
+  <!-- E3: Result returns -->
+  <circle cx="448" cy="152" r="8" fill="#1e4fa0"/>
+  <line x1="448" y1="144" x2="448" y2="82" stroke="#d0d8e8" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <text x="448" y="72" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0f2444">Lab Result Returns</text>
+  <text x="448" y="88" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">GBS+ reported</text>
+  <text x="448" y="103" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">No susceptibilities attached</text>
+  <text x="448" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">No EMR alert triggered</text>
 
-  <!-- ── EVENT 5: Intrapartum ── -->
-  <circle cx="790" cy="172" r="9" fill="#2a7a5a"/>
-  <line x1="790" y1="163" x2="790" y2="96" stroke="#cdd5e0" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <text x="790" y="86" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0f2444">Intrapartum</text>
-  <text x="790" y="104" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#2a7a5a">Vancomycin 1g IV</text>
-  <text x="790" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">given q12h</text>
+  <!-- E4: Labor admission -->
+  <circle cx="610" cy="152" r="8" fill="#1e4fa0"/>
+  <line x1="610" y1="163" x2="610" y2="222" stroke="#d0d8e8" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <text x="610" y="238" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0f2444">37.5w — OBER</text>
+  <text x="610" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">Active labor, 7 cm</text>
+  <text x="610" y="270" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">Missing susc. discovered</text>
 
-  <!-- ── EVENT 6: Postpartum ── -->
-  <circle cx="960" cy="172" r="12" fill="#b82c2c"/>
-  <text x="960" y="177" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="white">!</text>
-  <line x1="960" y1="184" x2="960" y2="248" stroke="#b82c2c" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <text x="960" y="268" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="700" fill="#b82c2c">12 h Postpartum</text>
-  <text x="960" y="286" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c">Fever, tachycardia</text>
-  <text x="960" y="302" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c">Uterine tenderness</text>
-  <text x="960" y="318" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#4a5c7a">→ Endometritis Dx</text>
+  <!-- E5: Vancomycin -->
+  <circle cx="778" cy="152" r="8" fill="#2a7a5a"/>
+  <line x1="778" y1="144" x2="778" y2="82" stroke="#d0d8e8" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <text x="778" y="72" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0f2444">Intrapartum</text>
+  <text x="778" y="88" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#2a7a5a" font-weight="600">Vancomycin 2g IV ×1</text>
+  <text x="778" y="103" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">3.5h prophylaxis → SVD</text>
+  <text x="778" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">Apgars 8/9 &bull; BW 2970g</text>
 
-  <!-- AXIS LABELS -->
-  <text x="60" y="198" font-family="Crimson Pro,serif" font-size="12" fill="#aab4c8" font-style="italic">Antepartum</text>
-  <text x="570" y="198" font-family="Crimson Pro,serif" font-size="12" fill="#aab4c8" font-style="italic">Peripartum</text>
-  <text x="890" y="198" font-family="Crimson Pro,serif" font-size="12" fill="#aab4c8" font-style="italic">Postpartum</text>
+  <!-- E6: Endometritis -->
+  <circle cx="946" cy="152" r="11" fill="#b82c2c"/>
+  <text x="946" y="157" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="white">!</text>
+  <line x1="946" y1="163" x2="946" y2="222" stroke="#b82c2c" stroke-width="1.4" stroke-dasharray="3,3"/>
+  <text x="946" y="238" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="#b82c2c">12h Postpartum</text>
+  <text x="946" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">Fever &bull; tachycardia</text>
+  <text x="946" y="270" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">Endometritis → Clinda/Gent</text>
 </svg>
 ```
 
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════ SLIDE 3 — ACOG FLOWCHART ══ -->
+<!-- ═══ S5 — ACOG FLOWCHART ═══ -->
 
-<section class="slide slide-light" id="s3">
-  <div class="slide-header">
-    <div class="slide-number">03</div>
-    <div class="slide-title">ACOG 2020 — Antibiotic Selection Algorithm</div>
-    <div class="slide-subtitle">Committee Opinion 797</div>
-  </div>
-  <div class="flowchart-wrap">
-    <svg viewBox="0 0 980 440" width="100%" style="max-height:380px;overflow:visible" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="a1" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <polygon points="0 0, 9 4, 0 8" fill="#1a3a6e"/>
-        </marker>
-        <marker id="a2" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <polygon points="0 0, 9 4, 0 8" fill="#b82c2c"/>
-        </marker>
-        <marker id="a3" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <polygon points="0 0, 9 4, 0 8" fill="#2a7a5a"/>
-        </marker>
-      </defs>
-
-```
-  <!-- ── START: GBS+ Patient ── -->
-  <rect x="350" y="10" width="260" height="44" rx="22" fill="#1a3a6e"/>
-  <text x="480" y="37" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="600" fill="white">GBS+ Patient in Labor</text>
-  <!-- arrow down -->
-  <line x1="480" y1="54" x2="480" y2="90" stroke="#1a3a6e" stroke-width="2" marker-end="url(#a1)"/>
-
-  <!-- ── D1: Penicillin Allergy? ── -->
-  <polygon points="480,92 600,138 480,184 360,138" fill="#e8edf5" stroke="#1a3a6e" stroke-width="2"/>
-  <text x="480" y="132" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="600" fill="#0f2444">Penicillin</text>
-  <text x="480" y="150" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="600" fill="#0f2444">Allergy?</text>
-
-  <!-- NO → left → Penicillin G -->
-  <line x1="360" y1="138" x2="200" y2="138" stroke="#2a7a5a" stroke-width="2" marker-end="url(#a3)"/>
-  <text x="278" y="128" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#2a7a5a">NO</text>
-  <rect x="80" y="108" width="120" height="60" rx="8" fill="#2a7a5a"/>
-  <text x="140" y="134" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Penicillin G</text>
-  <text x="140" y="153" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.8)">1st line</text>
-
-  <!-- YES → down → High-risk? -->
-  <line x1="480" y1="184" x2="480" y2="220" stroke="#b82c2c" stroke-width="2" marker-end="url(#a2)"/>
-  <text x="494" y="206" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#b82c2c">YES</text>
-
-  <!-- ── D2: High-risk allergy? ── -->
-  <polygon points="480,222 600,268 480,314 360,268" fill="#fdf0f0" stroke="#b82c2c" stroke-width="2"/>
-  <text x="480" y="260" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#7a1a1a">High-risk allergy?</text>
-  <text x="480" y="278" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">(urticaria / anaphylaxis)</text>
-
-  <!-- NO → left → Cefazolin -->
-  <line x1="360" y1="268" x2="200" y2="268" stroke="#2a7a5a" stroke-width="2" marker-end="url(#a3)"/>
-  <text x="278" y="258" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#2a7a5a">NO</text>
-  <rect x="80" y="238" width="120" height="60" rx="8" fill="#2a7a5a"/>
-  <text x="140" y="264" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Cefazolin</text>
-  <text x="140" y="283" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.8)">2 g IV load</text>
-
-  <!-- YES → down → Susceptibilities? -->
-  <line x1="480" y1="314" x2="480" y2="348" stroke="#b82c2c" stroke-width="2" marker-end="url(#a2)"/>
-  <text x="494" y="336" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#b82c2c">YES</text>
-
-  <!-- ── D3: Susceptibilities available and sensitive? ── -->
-  <polygon points="480,350 640,390 480,430 320,390" fill="#fdf0f0" stroke="#b82c2c" stroke-width="2"/>
-  <text x="480" y="382" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#7a1a1a">Susceptibilities</text>
-  <text x="480" y="400" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#7a1a1a">available + sensitive?</text>
-
-  <!-- YES → right → Clindamycin -->
-  <line x1="640" y1="390" x2="760" y2="390" stroke="#2a7a5a" stroke-width="2" marker-end="url(#a3)"/>
-  <text x="698" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#2a7a5a">YES</text>
-  <rect x="760" y="360" width="140" height="60" rx="8" fill="#2a7a5a"/>
-  <text x="830" y="387" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Clindamycin</text>
-  <text x="830" y="406" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.8)">900 mg IV q8h</text>
-
-  <!-- NO → left → Vancomycin (THIS CASE) -->
-  <line x1="320" y1="390" x2="180" y2="390" stroke="#b82c2c" stroke-width="2" marker-end="url(#a2)"/>
-  <text x="248" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#b82c2c">NO</text>
-  <rect x="50" y="358" width="130" height="64" rx="8" fill="#8a1c1c" stroke="#b82c2c" stroke-width="2"/>
-  <text x="115" y="384" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Vancomycin</text>
-  <text x="115" y="404" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,0.8)">This case ↗</text>
-  <!-- Star callout -->
-  <text x="50" y="440" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">★ Used when susceptibilities unknown</text>
-</svg>
-```
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════ SLIDE 4 — FISHBONE ══ -->
-
-<section class="slide slide-light" id="s4">
-  <div class="slide-header">
-    <div class="slide-number">04</div>
-    <div class="slide-title">Root Cause Analysis</div>
-    <div class="slide-subtitle">Ishikawa / Fishbone Diagram &bull; 2 min</div>
+<section class="slide light" id="s5">
+  <div class="sh">
+    <div class="sh-num">05</div>
+    <div class="sh-title">ACOG 2020 — Antibiotic Selection</div>
+    <div class="sh-sub">Committee Opinion 797</div>
   </div>
   <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-  <svg viewBox="0 0 980 460" width="100%" style="max-height:360px;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 980 430" width="100%" style="max-height:370px;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#2a7a5a"/></marker>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#b82c2c"/></marker>
+        <marker id="an" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#1a3a6e"/></marker>
+      </defs>
+
+```
+  <rect x="345" y="8" width="270" height="42" rx="21" fill="#1a3a6e"/>
+  <text x="480" y="34" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="600" fill="white">GBS+ Patient in Labor</text>
+  <line x1="480" y1="50" x2="480" y2="84" stroke="#1a3a6e" stroke-width="2" marker-end="url(#an)"/>
+
+  <!-- D1 -->
+  <polygon points="480,86 600,130 480,174 360,130" fill="#eef1f8" stroke="#1a3a6e" stroke-width="2"/>
+  <text x="480" y="124" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0f2444">Penicillin</text>
+  <text x="480" y="142" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0f2444">Allergy?</text>
+  <line x1="360" y1="130" x2="210" y2="130" stroke="#2a7a5a" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="283" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2a7a5a">NO</text>
+  <rect x="80" y="102" width="130" height="56" rx="7" fill="#2a7a5a"/>
+  <text x="145" y="127" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Penicillin G</text>
+  <text x="145" y="147" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,.8)">First-line</text>
+  <line x1="480" y1="174" x2="480" y2="206" stroke="#b82c2c" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="492" y="194" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#b82c2c">YES</text>
+
+  <!-- D2 -->
+  <polygon points="480,208 600,252 480,296 360,252" fill="#fdf0f0" stroke="#b82c2c" stroke-width="2"/>
+  <text x="480" y="244" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#7a1a1a">High-risk allergy?</text>
+  <text x="480" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">(urticaria / anaphylaxis)</text>
+  <line x1="360" y1="252" x2="210" y2="252" stroke="#2a7a5a" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="283" y="242" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2a7a5a">NO</text>
+  <rect x="80" y="224" width="130" height="56" rx="7" fill="#2a7a5a"/>
+  <text x="145" y="249" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Cefazolin</text>
+  <text x="145" y="268" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,.8)">2 g IV load</text>
+  <line x1="480" y1="296" x2="480" y2="328" stroke="#b82c2c" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="492" y="316" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#b82c2c">YES</text>
+
+  <!-- D3 -->
+  <polygon points="480,330 640,370 480,410 320,370" fill="#fdf0f0" stroke="#b82c2c" stroke-width="2"/>
+  <text x="480" y="362" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#7a1a1a">Susceptibilities</text>
+  <text x="480" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#7a1a1a">available &amp; sensitive?</text>
+
+  <line x1="640" y1="370" x2="762" y2="370" stroke="#2a7a5a" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="699" y="360" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2a7a5a">YES</text>
+  <rect x="762" y="342" width="148" height="56" rx="7" fill="#2a7a5a"/>
+  <text x="836" y="367" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Clindamycin</text>
+  <text x="836" y="386" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,.8)">900 mg IV q8h</text>
+
+  <line x1="320" y1="370" x2="186" y2="370" stroke="#b82c2c" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="251" y="360" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#b82c2c">NO</text>
+  <rect x="48" y="340" width="138" height="60" rx="7" fill="#8a1c1c" stroke="#b82c2c" stroke-width="2"/>
+  <text x="117" y="366" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="white">Vancomycin</text>
+  <text x="117" y="385" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,210,150,.85)">← This case</text>
+  <text x="48" y="422" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c">★ Pathway taken when susceptibilities unavailable</text>
+</svg>
+```
+
+  </div>
+</section>
+
+<!-- ═══ S6 — FISHBONE ═══ -->
+
+<section class="slide light" id="s6">
+  <div class="sh">
+    <div class="sh-num">06</div>
+    <div class="sh-title">Root Cause Analysis</div>
+    <div class="sh-sub">Fishbone — 2 min</div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+  <svg viewBox="0 0 980 420" width="100%" style="max-height:340px;overflow:visible" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <marker id="fh" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-        <polygon points="0 0, 10 5, 0 10" fill="#0f2444"/>
+      <marker id="sp" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+        <polygon points="0 0,10 5,0 10" fill="#0f2444"/>
       </marker>
     </defs>
 
 ```
-<!-- ═══ SPINE ═══ -->
-<line x1="60" y1="228" x2="800" y2="228" stroke="#0f2444" stroke-width="3.5" marker-end="url(#fh)"/>
+<!-- SPINE -->
+<line x1="50" y1="210" x2="798" y2="210" stroke="#0f2444" stroke-width="3.5" marker-end="url(#sp)"/>
 
-<!-- ═══ EFFECT BOX ═══ -->
-<rect x="808" y="174" width="160" height="108" rx="10" fill="#0f2444"/>
-<text x="888" y="210" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" font-weight="700" fill="white">Missing GBS</text>
-<text x="888" y="230" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" font-weight="700" fill="white">Susceptibilities</text>
-<text x="888" y="256" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,0.9)">→ Inadequate</text>
-<text x="888" y="271" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,0.9)">Prophylaxis</text>
+<!-- EFFECT BOX -->
+<rect x="806" y="158" width="164" height="104" rx="9" fill="#0f2444"/>
+<text x="888" y="195" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" font-weight="700" fill="white">Missing GBS</text>
+<text x="888" y="214" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" font-weight="700" fill="white">Susceptibilities</text>
+<text x="888" y="240" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,.9)">→ Vancomycin (not Clinda)</text>
+<text x="888" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,.9)">→ Postpartum endometritis</text>
 
-<!-- ═══ CATEGORY: PROCESS (Top-Left) ═══ -->
-<!-- Major bone from spine at x=180 up-left to x=90, y=100 -->
-<line x1="180" y1="228" x2="90" y2="108" stroke="#1a3a6e" stroke-width="2.5"/>
-<!-- Label -->
-<rect x="28" y="78" width="100" height="28" rx="6" fill="#1a3a6e"/>
-<text x="78" y="97" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="700" fill="white">Process</text>
-<!-- Sub-bones -->
-<line x1="153" y1="188" x2="100" y2="148" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="95" y="145" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Paper send-out form</text>
-<line x1="130" y1="208" x2="74" y2="172" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="70" y="170" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Manual workflow</text>
-<line x1="168" y1="196" x2="110" y2="128" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="106" y="126" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">No verification step</text>
+<!-- CAT 1: EMR / ORDER (top-left) -->
+<line x1="162" y1="210" x2="80" y2="92" stroke="#1a3a6e" stroke-width="2.5"/>
+<rect x="18" y="62" width="116" height="28" rx="6" fill="#1a3a6e"/>
+<text x="76" y="81" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">EMR / Order</text>
+<line x1="134" y1="170" x2="86" y2="132" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="82" y="130" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Order placed correctly</text>
+<line x1="114" y1="190" x2="62" y2="158" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="58" y="156" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">"PCN allergy" entered in field</text>
+<line x1="148" y1="152" x2="96" y2="108" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="92" y="106" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">Cerner text truncation?</text>
 
-<!-- ═══ CATEGORY: LABORATORY (Top-Right area) ═══ -->
-<!-- Major bone from spine at x=380 up to x=310, y=90 -->
-<line x1="380" y1="228" x2="290" y2="96" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="238" y="66" width="108" height="28" rx="6" fill="#1a3a6e"/>
-<text x="292" y="85" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="700" fill="white">Laboratory</text>
-<!-- Sub-bones -->
-<line x1="345" y1="188" x2="278" y2="140" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="274" y="138" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Send-out specimen flow</text>
-<line x1="362" y1="206" x2="295" y2="116" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="291" y="114" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Separate request required</text>
-<line x1="325" y1="173" x2="264" y2="158" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="260" y="156" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">No fallback QC step</text>
+<!-- CAT 2: LABORATORY (top, second from left) — RED to emphasize this is primary cause -->
+<line x1="348" y1="210" x2="268" y2="78" stroke="#b82c2c" stroke-width="2.5"/>
+<rect x="214" y="50" width="106" height="28" rx="6" fill="#b82c2c"/>
+<text x="267" y="69" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Laboratory ★</text>
+<line x1="314" y1="170" x2="256" y2="126" stroke="#b82c2c" stroke-width="1.4"/>
+<text x="252" y="124" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">Testing not performed</text>
+<line x1="330" y1="190" x2="270" y2="104" stroke="#b82c2c" stroke-width="1.4"/>
+<text x="266" y="102" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">Root cause pending (AM follow-up)</text>
+<line x1="298" y1="150" x2="248" y2="145" stroke="#b82c2c" stroke-width="1.4"/>
+<text x="244" y="143" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">No internal QC or notification</text>
 
-<!-- ═══ CATEGORY: EMR / TECH (Top-Right) ═══ -->
-<!-- Major bone from spine at x=560 up-right to x=640, y=90 -->
-<line x1="560" y1="228" x2="640" y2="92" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="630" y="62" width="90" height="28" rx="6" fill="#1a3a6e"/>
-<text x="675" y="81" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="700" fill="white">EMR / Tech</text>
-<!-- Sub-bones -->
-<line x1="582" y1="196" x2="616" y2="152" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="620" y="150" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">No auto-order set</text>
-<line x1="598" y1="176" x2="630" y2="124" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="634" y="122" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">No missing-result alert</text>
-<line x1="566" y1="212" x2="614" y2="170" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="618" y="168" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">No prenatal checklist flag</text>
+<!-- CAT 3: COMMUNICATION (top-right) -->
+<line x1="538" y1="210" x2="610" y2="76" stroke="#1a3a6e" stroke-width="2.5"/>
+<rect x="584" y="48" width="148" height="28" rx="6" fill="#1a3a6e"/>
+<text x="658" y="67" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Communication</text>
+<line x1="560" y1="178" x2="596" y2="134" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="600" y="132" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No lab → clinic notification</text>
+<line x1="548" y1="194" x2="588" y2="152" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="592" y="150" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Result reviewed without flag</text>
+<line x1="566" y1="162" x2="604" y2="108" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="608" y="106" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Gap found at admission only</text>
 
-<!-- ═══ CATEGORY: COMMUNICATION (Bottom) ═══ -->
-<!-- Major bone from spine at x=470 down-right to x=550, y=360 -->
-<line x1="470" y1="228" x2="556" y2="358" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="510" y="362" width="156" height="28" rx="6" fill="#1a3a6e"/>
-<text x="588" y="381" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="700" fill="white">Communication</text>
-<!-- Sub-bones -->
-<line x1="490" y1="258" x2="530" y2="298" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="534" y="298" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Lab ↔ Clinic handoff gap</text>
-<line x1="500" y1="278" x2="540" y2="318" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="544" y="318" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Result not acted upon</text>
-<line x1="480" y1="240" x2="516" y2="278" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="520" y="278" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Issue found only in labor</text>
+<!-- CAT 4: PRENATAL FOLLOW-UP (bottom-left) -->
+<line x1="244" y1="210" x2="166" y2="338" stroke="#1a3a6e" stroke-width="2.5"/>
+<rect x="64" y="342" width="154" height="28" rx="6" fill="#1a3a6e"/>
+<text x="141" y="361" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Prenatal Follow-up</text>
+<line x1="220" y1="238" x2="180" y2="272" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="176" y="270" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Result not verified at next visit</text>
+<line x1="231" y1="256" x2="187" y2="292" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="183" y="290" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No allergy-patient checklist</text>
 
-<!-- ═══ CATEGORY: PATIENT FACTORS (Bottom-Left) ═══ -->
-<!-- Major bone from spine at x=260 down-left to x=160, y=355 -->
-<line x1="260" y1="228" x2="170" y2="354" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="60" y="358" width="160" height="28" rx="6" fill="#1a3a6e"/>
-<text x="140" y="377" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="700" fill="white">Patient Factors</text>
-<!-- Sub-bones -->
-<line x1="228" y1="268" x2="184" y2="302" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="180" y="300" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">High-risk PCN allergy</text>
-<line x1="243" y1="290" x2="195" y2="324" stroke="#4a5c7a" stroke-width="1.5"/>
-<text x="191" y="322" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#1a1a2e">Narrows antibiotic choices</text>
+<!-- CAT 5: SYSTEM / EMR ALERTS (bottom-right) -->
+<line x1="456" y1="210" x2="538" y2="338" stroke="#1a3a6e" stroke-width="2.5"/>
+<rect x="512" y="342" width="138" height="28" rx="6" fill="#1a3a6e"/>
+<text x="581" y="361" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">System Gaps</text>
+<line x1="477" y1="240" x2="516" y2="274" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="520" y="272" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No missing-result EMR alert</text>
+<line x1="466" y1="256" x2="508" y2="294" stroke="#4a5c7a" stroke-width="1.4"/>
+<text x="512" y="292" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No auto-flag for PCN-allergic GBS+</text>
 ```
 
   </svg>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════ SLIDE 5 — LITERATURE ══ -->
+<!-- ═══ S7 — THE ORDER ═══ -->
 
-<section class="slide slide-light" id="s5">
-  <div class="slide-header">
-    <div class="slide-number">05</div>
-    <div class="slide-title">Literature Review</div>
-    <div class="slide-subtitle">Guideline Only &bull; 1 min</div>
+<section class="slide light" id="s7">
+  <div class="sh">
+    <div class="sh-num">07</div>
+    <div class="sh-title">The Electronic Order</div>
+    <div class="sh-sub">What Was Actually Placed</div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:18px;max-width:900px;">
+  <div style="display:flex;gap:28px;flex:1;align-items:flex-start;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:14px;">
+      <div class="case-block ok">
+        <h3>&#9989; Order Was Placed Correctly</h3>
+        <ul>
+          <li>GBS susceptibility testing was <strong>ordered outpatient</strong> via Cerner — no paper form required</li>
+          <li><strong>"Penicillin allergy"</strong> entered in the susceptibilities/special instructions field</li>
+          <li>Meets standard of care for high-risk PCN-allergic patients at time of GBS screen</li>
+        </ul>
+      </div>
+      <div class="case-block error">
+        <h3>&#10060; Where It Went Wrong</h3>
+        <ul>
+          <li>Lab did <strong>not</strong> perform susceptibility testing despite the electronic order</li>
+          <li>No notification or callback to the clinical team</li>
+          <li>Result returned GBS+ <em>without susceptibilities</em> — no EMR alert fired</li>
+          <li>Lab contacted day before presentation — <strong>no clear explanation given; follow-up with lab director tomorrow AM</strong></li>
+        </ul>
+      </div>
+      <div class="case-block warn">
+        <h3>&#9888;&#65039; Open Question — Cerner Text Truncation</h3>
+        <p>It is unknown whether <em>"penicillin allergy"</em> as entered in the Cerner free-text field was fully transmitted to the reference lab system. This is part of the ongoing investigation. May represent a systemic issue affecting other allergy patients.</p>
+      </div>
+    </div>
+    <div style="width:360px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;">
+      <div style="background:var(--mist);border-radius:10px;padding:14px;border:1.5px solid var(--rule);text-align:center;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:10px;">Cerner Electronic Order</div>
+        <img src="order.jpg" alt="Cerner order screenshot"
+          style="width:100%;border-radius:6px;border:1px solid var(--rule);display:block;"
+          onerror="this.style.display='none';document.getElementById('ofb').style.display='flex'"/>
+        <div id="ofb" style="display:none;min-height:150px;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--slate);">
+          <div style="font-size:32px;">📋</div>
+          <div style="font-size:13px;font-weight:500;line-height:1.5;">Place <strong>order.jpg</strong><br>in the same folder as this file</div>
+        </div>
+      </div>
+      <div style="background:#fdf8ee;border-radius:8px;padding:14px 16px;border-left:4px solid var(--gold);">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;margin-bottom:5px;">KEY POINT</div>
+        <div style="font-size:14px;color:var(--light);line-height:1.65;">The error was <strong style="color:var(--navy);">downstream of the order</strong>. This was not a provider ordering failure — it was a lab-side failure.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S8 — LITERATURE ═══ -->
+
+<section class="slide light" id="s8">
+  <div class="sh">
+    <div class="sh-num">08</div>
+    <div class="sh-title">Literature Review</div>
+    <div class="sh-sub">Guidelines Only &bull; 1 min</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:920px;">
     <div class="lit-card">
-      <span class="lit-grade">ACOG CO 797, 2020</span>
-      <div class="citation">ACOG Committee Opinion No. 797 — Prevention of Group B Streptococcal Early-Onset Disease in Newborns. American College of Obstetricians and Gynecologists, 2020.</div>
-      <div class="finding">In patients with a <strong>high-risk penicillin allergy</strong> (urticaria, angioedema, anaphylaxis), clindamycin should be used when the isolate is susceptible. When susceptibility data are <strong>unavailable</strong>, vancomycin is the recommended alternative. Susceptibility testing of GBS isolates is therefore <strong>essential</strong> in the management of penicillin-allergic patients.</div>
+      <span class="lit-badge">ACOG CO 797, 2020</span>
+      <div class="cite-label">American College of Obstetricians and Gynecologists. Committee Opinion No. 797. 2020.</div>
+      <div class="find">In patients with a <strong>high-risk penicillin allergy</strong> (urticaria, angioedema, anaphylaxis), clindamycin is preferred when the isolate is susceptible. When susceptibility data are <strong>unavailable</strong>, vancomycin is the recommended alternative. Susceptibility testing is therefore <strong>mandatory</strong> in penicillin-allergic patients — it is the pivot point that determines antibiotic choice.</div>
     </div>
     <div class="lit-card" style="border-color:var(--gold);">
-      <span class="lit-grade" style="background:var(--gold);">Dosing Guidance</span>
-      <div class="citation">ACOG / SMFM Guidance — Updated Vancomycin Dosing for GBS Prophylaxis.</div>
-      <div class="finding">Weight-based dosing of <strong>20 mg/kg IV q8h</strong> (max 3 g/dose) is recommended over the older flat-dose 1 g q12h regimen, as it achieves superior maternal and fetal tissue concentrations. Pharmacy collaboration is essential for appropriate dosing in labor.</div>
+      <span class="lit-badge" style="background:var(--gold);">Onwuchuruba et al., AJOG 2014</span>
+      <div class="cite-label">Onwuchuruba CN, Towers CV, Howard BC, et al. Transplacental passage of vancomycin from mother to neonate. Am J Obstet Gynecol. 2014;210:352.e1–4.</div>
+      <div class="find">Standard-dose vancomycin (1g IV): only <strong>32% of maternal</strong> and <strong>9% of neonatal</strong> blood samples reached therapeutic range at delivery. Higher-dose (weight-based): <strong>83% of both maternal and neonatal samples</strong> were therapeutic. Current ACOG guidance: <strong>20 mg/kg IV q8–12h, max 2 g/dose.</strong> The Cerner OB default of 1g q12h does not meet this standard.</div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════ SLIDE 6 — QI ACTIONS ══ -->
+<!-- ═══ S9 — QI ACTIONS ═══ -->
 
-<section class="slide slide-light" id="s6">
-  <div class="slide-header">
-    <div class="slide-number">06</div>
-    <div class="slide-title">Quality Improvement Actions</div>
-    <div class="slide-subtitle">System-Level Solutions</div>
+<section class="slide light" id="s9">
+  <div class="sh">
+    <div class="sh-num">09</div>
+    <div class="sh-title">Quality Improvement Actions</div>
+    <div class="sh-sub">System-Level Solutions</div>
   </div>
   <div class="qi-grid">
-    <div class="qi-card tech">
-      <h3>&#9881;&#65039; EMR Order Set</h3>
-      <p>Modify prenatal GBS order set to <strong>automatically include susceptibility testing</strong> when penicillin allergy is documented — no separate action required by provider.</p>
+    <div class="qi-card c-red">
+      <h3>🔍 Complete the Lab Investigation</h3>
+      <p>Determine the exact mechanism of lab failure. Did the Cerner field text not transmit? Was it ignored? Implement corrective action with lab leadership and document for quality reporting.</p>
     </div>
-    <div class="qi-card process">
-      <h3>&#128203; Eliminate Paper Forms</h3>
-      <p>Fully digitize laboratory send-out requests. Remove dependency on paper forms that can be separated from specimens during transport.</p>
+    <div class="qi-card c-blue">
+      <h3>📋 Redesign the EMR Order Set</h3>
+      <p>Modify prenatal GBS order set to automatically trigger susceptibility testing when penicillin allergy is documented — eliminate reliance on a free-text field that may be truncated or misinterpreted.</p>
     </div>
-    <div class="qi-card action">
-      <h3>&#128276; Automated Alert</h3>
-      <p>Build EMR alert: <em>"GBS positive — susceptibilities pending or missing"</em> triggered when allergy flag present. Fires at lab result and again at prenatal visit closest to term.</p>
+    <div class="qi-card c-gold">
+      <h3>🔔 Automated Missing-Result Alert</h3>
+      <p>Build EMR alert: <em>"GBS positive — susceptibilities absent"</em> triggered when allergy flag is present. Alert fires at result receipt and at the next prenatal encounter closest to term.</p>
     </div>
-    <div class="qi-card edu">
-      <h3>&#9989; 36-Week Prenatal Checklist</h3>
-      <p>Standardize a prenatal visit checklist verifying that susceptibility results are received and documented for all GBS+ patients with documented antibiotic allergy.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════ SLIDE 7 — TAKE HOME ══ -->
-
-<section class="slide slide-dark" id="s7">
-  <div class="slide-header">
-    <div class="slide-number">07</div>
-    <div class="slide-title">Take-Home Points</div>
-    <div class="slide-subtitle" style="color:rgba(255,255,255,0.4);">For Discussion</div>
-  </div>
-  <div class="takeaway-grid">
-    <div class="takeaway-card">
-      <span class="icon">&#128300;</span>
-      <h3>Susceptibility testing is mandatory in penicillin-allergic patients</h3>
-      <p>Without it, we default to vancomycin — a broader-spectrum agent associated with greater side effects and inferior fetal tissue levels.</p>
-    </div>
-    <div class="takeaway-card">
-      <span class="icon">&#9878;&#65039;</span>
-      <h3>Vancomycin dosing matters</h3>
-      <p>Weight-based dosing (20 mg/kg q8h) is the current standard. Older flat-dose 1 g q12h protocols should be retired.</p>
-    </div>
-    <div class="takeaway-card">
-      <span class="icon">&#128265;</span>
-      <h3>System failures are not individual failures</h3>
-      <p>The missing send-out form was a process gap — not a single provider error. Solutions must be system-level.</p>
-    </div>
-    <div class="takeaway-card" style="border-color:rgba(200,146,42,0.35);background:rgba(200,146,42,0.07);">
-      <span class="icon">&#128161;</span>
-      <h3>The intervention window is prenatal, not intrapartum</h3>
-      <p>Catching a missing result at the labor admission is too late. The 36-week visit is our last safe opportunity to verify.</p>
+    <div class="qi-card c-green">
+      <h3>✅ 36-Week Prenatal Checklist</h3>
+      <p>Standardize a prenatal visit checklist confirming susceptibility results are received and charted for all GBS+ patients with any documented antibiotic allergy — before the patient can reach the labor floor.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════ SLIDE 8 — BACK POCKET: VANC DOSING ══ -->
+<!-- ═══ S10 — TAKE HOME ═══ -->
 
-<section class="slide slide-dark" id="s8" data-backpocket="true">
-  <div class="slide-header">
-    <div class="slide-number">BP1</div>
-    <div class="slide-title">Vancomycin Dosing — Teaching Point</div>
-    <div class="slide-subtitle" style="color:rgba(255,255,255,0.4);">Back Pocket</div>
-  </div>
-  <div style="margin-top:-10px;">
-    <div class="bp-label" style="display:inline-block;">Back Pocket Slide</div>
-  </div>
-  <table class="vanc-table" style="margin-top:18px;">
-    <thead>
-      <tr>
-        <th>Regimen</th>
-        <th>Dose</th>
-        <th>Interval</th>
-        <th>Notes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Older flat-dose</td>
-        <td>1 g IV</td>
-        <td>q12h</td>
-        <td>Subtherapeutic fetal levels; no longer recommended</td>
-      </tr>
-      <tr class="highlight-row">
-        <td>ACOG 2020 (current)</td>
-        <td>20 mg/kg IV</td>
-        <td>q8h</td>
-        <td>Max 3 g/dose. Achieves adequate maternal &amp; fetal tissue levels.</td>
-      </tr>
-      <tr>
-        <td>Infusion duration</td>
-        <td colspan="2">Over 60 min (min). Longer for doses &gt;1.5 g</td>
-        <td>Faster infusion → Red man syndrome risk</td>
-      </tr>
-      <tr>
-        <td>Pharmacy coordination</td>
-        <td colspan="2">Trough / AUC monitoring optional in short labor</td>
-        <td>Critical to calculate actual weight-based dose at admission</td>
-      </tr>
-    </tbody>
-  </table>
-  <div style="margin-top:22px;display:flex;gap:16px;">
-    <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:8px;padding:18px 22px;border:1px solid rgba(255,255,255,0.08);">
-      <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:8px;letter-spacing:0.06em;">WHY IT MATTERS</div>
-      <div style="font-size:15px;color:rgba(255,255,255,0.75);line-height:1.6;">Inadequate vancomycin levels leave neonates at risk. Weight-based dosing corrects for the pharmacokinetic variability inherent in pregnancy.</div>
+<section class="slide dark" id="s10">
+  <div style="padding:52px 84px;display:flex;flex-direction:column;height:100%;">
+    <div class="dsh">
+      <div class="sh-num">10</div>
+      <div class="sh-title">Take-Home Points</div>
+      <div class="sh-sub">For Discussion</div>
     </div>
-    <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:8px;padding:18px 22px;border:1px solid rgba(255,255,255,0.08);">
-      <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:8px;letter-spacing:0.06em;">ACTION ITEM</div>
-      <div style="font-size:15px;color:rgba(255,255,255,0.75);line-height:1.6;">Review current labor floor vancomycin order set with pharmacy. Update default dose to weight-based if not already done.</div>
+    <div class="take-grid">
+      <div class="take-card">
+        <span class="ic">🔬</span>
+        <h3>Susceptibility testing is essential in PCN-allergic patients</h3>
+        <p>Without it, we default to vancomycin. When the isolate is sensitive, clindamycin is preferred — and that information requires a susceptibility result.</p>
+      </div>
+      <div class="take-card">
+        <span class="ic">⚖️</span>
+        <h3>Vancomycin dosing: weight-based &gt; flat-dose</h3>
+        <p>20 mg/kg q8h achieves 83% neonatal therapeutic levels vs 9% with the old 1g q12h. Cerner's OB default should be updated — this is an action item for pharmacy and OB leadership.</p>
+      </div>
+      <div class="take-card">
+        <span class="ic">🔊</span>
+        <h3>System failures require system solutions</h3>
+        <p>The order was placed correctly. The failure was downstream in the lab. Pointing at individuals derails learning — we need structural fixes: alerts, auto-orders, checklists.</p>
+      </div>
+      <div class="take-card" style="border-color:rgba(200,146,42,.35);background:rgba(200,146,42,.07);">
+        <span class="ic">💡</span>
+        <h3>The intervention window is prenatal — not at the OBER</h3>
+        <p>Discovering a missing susceptibility at labor admission is too late. The 36-week prenatal visit is the last safe opportunity to find and fix this gap.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════ SLIDE 9 — BACK POCKET: DISCUSSION ══ -->
+<!-- ═══ S11 — BP: VANCOMYCIN ═══ -->
 
-<section class="slide slide-dark" id="s9" data-backpocket="true">
-  <div class="slide-header">
-    <div class="slide-number">BP2</div>
-    <div class="slide-title">Anticipated Discussion Questions</div>
-    <div class="slide-subtitle" style="color:rgba(255,255,255,0.4);">Back Pocket</div>
+<section class="slide dark" id="s11" data-bp="true">
+  <div style="padding:52px 84px;display:flex;flex-direction:column;height:100%;">
+    <div class="dsh">
+      <div class="sh-num">BP1</div>
+      <div class="sh-title">Vancomycin — Dosing Detail</div>
+      <div class="sh-sub">Back Pocket</div>
+    </div>
+    <div style="margin-top:-6px;margin-bottom:18px;"><span class="bp-label">Back Pocket Slide</span></div>
+    <table class="vanc-tbl">
+      <thead>
+        <tr>
+          <th>Regimen</th>
+          <th>Dose</th>
+          <th>Interval</th>
+          <th>Neonatal therapeutic %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cerner OB default (current)</td>
+          <td>1 g IV</td>
+          <td>q12h</td>
+          <td style="color:#e07070;">9% — subtherapeutic</td>
+        </tr>
+        <tr class="hl">
+          <td>ACOG 2020 standard</td>
+          <td>20 mg/kg IV</td>
+          <td>q8–12h (max 2 g)</td>
+          <td style="color:#7adb9a;">83% — therapeutic ✓</td>
+        </tr>
+        <tr>
+          <td>This case</td>
+          <td>2 g IV × 1</td>
+          <td>Single dose, 3.5h pre-delivery</td>
+          <td style="color:rgba(200,146,42,.9);">Flat dose, single dose — likely suboptimal</td>
+        </tr>
+        <tr>
+          <td>Infusion rate</td>
+          <td colspan="2">≥60 min; &gt;90 min for doses &gt;1.5 g</td>
+          <td>Faster → red man syndrome risk</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="background:rgba(255,255,255,.05);border-radius:8px;padding:16px 20px;border:1px solid rgba(255,255,255,.08);">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px;letter-spacing:.07em;">WHY IT MATTERS</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.7);line-height:1.65;">Vancomycin transplacental passage is concentration-dependent. A flat 1g dose — especially with only one dose given — may not achieve bactericidal fetal levels against GBS.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.05);border-radius:8px;padding:16px 20px;border:1px solid rgba(255,255,255,.08);">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px;letter-spacing:.07em;">ACTION ITEM</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.7);line-height:1.65;">Cerner OB order set currently defaults to 1g q12h. This should be updated to weight-based 20 mg/kg q8h with pharmacy collaboration.</div>
+      </div>
+    </div>
   </div>
-  <div style="margin-top:-10px;margin-bottom:22px;">
-    <div class="bp-label" style="display:inline-block;">Back Pocket Slide</div>
+</section>
+
+<!-- ═══ S12 — BP: REFERENCES ═══ -->
+
+<section class="slide light" id="s12" data-bp="true">
+  <div class="sh">
+    <div class="sh-num">BP2</div>
+    <div class="sh-title">References</div>
+    <div class="sh-sub">Back Pocket</div>
   </div>
-  <ul class="bullet-list dark" style="gap:22px;">
-    <li><strong>Q: Why wasn't the lab result reviewed before labor?</strong><br><span style="font-size:18px;color:rgba(255,255,255,0.55);">Culture returned GBS+ without susceptibilities. No EMR alert was generated. The prenatal provider did not identify the gap, and the patient was not flagged at the subsequent prenatal visit.</span></li>
-    <li><strong>Q: Could the endometritis have been caused by inadequate prophylaxis?</strong><br><span style="font-size:18px;color:rgba(255,255,255,0.55);">Postpartum endometritis is multifactorial. However, inadequate GBS prophylaxis may have contributed. The case represents a system failure that placed this patient at elevated risk.</span></li>
-    <li><strong>Q: What would you do differently at the time of labor admission?</strong><br><span style="font-size:18px;color:rgba(255,255,255,0.55);">Recognize missing susceptibilities immediately. Initiate vancomycin using weight-based dosing. Notify senior and pharmacy. Document reasoning.</span></li>
+  <div style="margin-bottom:24px;"><span class="bp-label">Back Pocket Slide</span></div>
+  <ul class="cite-list">
+    <li>Baker CJ. Prevention of early-onset group B streptococcal disease in neonates. <em>UpToDate.</em> Accessed September 2025.</li>
+    <li>American College of Obstetricians and Gynecologists. Committee Opinion No. 797: Prevention of Group B Streptococcal Early-Onset Disease in Neonates. <em>Obstet Gynecol.</em> 2020;135(2):e51–e72.</li>
+    <li>Onwuchuruba CN, Towers CV, Howard BC, Hennessy MD, Wolfe L, Brown MS. Transplacental passage of vancomycin from mother to neonate. <em>Am J Obstet Gynecol.</em> 2014;210:352.e1–4.</li>
   </ul>
 </section>
 
-</div><!-- /deck -->
+</div>
 
 <script>
   const slides = document.querySelectorAll('.slide');
   const counter = document.getElementById('slide-counter');
   const bpBadge = document.getElementById('bp-badge');
-  const dotsContainer = document.getElementById('progress-dots');
-  let current = 0;
+  const dotsEl = document.getElementById('prog-dots');
+  let cur = 0;
   const total = slides.length;
 
-  // Build dots
-  slides.forEach((_, i) => {
+  slides.forEach((_,i) => {
     const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.className = 'dot'+(i===0?' active':'');
     d.onclick = () => goTo(i);
-    d.style.cursor = 'pointer';
-    dotsContainer.appendChild(d);
+    dotsEl.appendChild(d);
   });
+  counter.textContent = `1 / ${total}`;
 
   function goTo(n) {
-    slides[current].classList.remove('active');
-    dotsContainer.children[current].classList.remove('active');
-    current = Math.max(0, Math.min(total - 1, n));
-    slides[current].classList.add('active');
-    dotsContainer.children[current].classList.add('active');
-    counter.textContent = `${current + 1} / ${total}`;
-    const isBack = slides[current].dataset.backpocket === 'true';
-    bpBadge.style.display = isBack ? 'block' : 'none';
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(total-1, n));
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+    counter.textContent = `${cur+1} / ${total}`;
+    bpBadge.style.display = slides[cur].dataset.bp ? 'block' : 'none';
   }
-
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
+  function next() { goTo(cur+1); }
+  function prev() { goTo(cur-1); }
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+    if (['ArrowRight','ArrowDown',' '].includes(e.key)) { e.preventDefault(); next(); }
+    if (['ArrowLeft','ArrowUp'].includes(e.key)) { e.preventDefault(); prev(); }
   });
-
-  // Click right half to advance, left half to go back
   document.querySelector('.deck').addEventListener('click', e => {
-    if (e.target.closest('#nav') || e.target.closest('button')) return;
-    if (e.clientX > window.innerWidth / 2) next();
-    else prev();
+    if (e.target.closest('#nav')) return;
+    e.clientX > window.innerWidth/2 ? next() : prev();
   });
 </script>
 
