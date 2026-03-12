@@ -452,75 +452,109 @@ border-left: 10px solid var(–navy);
     <div class="sh-title">Root Cause Analysis</div>
     <div class="sh-sub">Fishbone — 2 min</div>
   </div>
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-  <svg viewBox="0 0 980 420" width="100%" style="max-height:340px;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding-top:4px;">
+  <!--
+    FISHBONE DESIGN RULES:
+    - Text lives only in its column zone, never on a diagonal line
+    - Major bones are single angled lines from column base → spine
+    - Causes are stacked text, centered in column, connected by short horizontal ticks to the bone
+    - viewBox: 1100 × 500. Spine: y=252, x=88→870
+    - 3 top columns (LEFT x≈145, CENTER x≈415, RIGHT x≈685) + 2 bottom (LEFT x≈250, RIGHT x≈590)
+  -->
+  <svg viewBox="0 0 1100 500" width="100%" style="max-height:360px;" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <marker id="sp" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-        <polygon points="0 0,10 5,0 10" fill="#0f2444"/>
+      <marker id="spfb" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto">
+        <polygon points="0 0,11 5.5,0 11" fill="#0f2444"/>
       </marker>
     </defs>
 
 ```
-<!-- SPINE -->
-<line x1="50" y1="210" x2="798" y2="210" stroke="#0f2444" stroke-width="3.5" marker-end="url(#sp)"/>
+<!-- ══ SPINE ══ -->
+<line x1="88" y1="252" x2="873" y2="252"
+      stroke="#0f2444" stroke-width="4" marker-end="url(#spfb)"/>
 
-<!-- EFFECT BOX -->
-<rect x="806" y="158" width="164" height="104" rx="9" fill="#0f2444"/>
-<text x="888" y="195" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" font-weight="700" fill="white">Missing GBS</text>
-<text x="888" y="214" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" font-weight="700" fill="white">Susceptibilities</text>
-<text x="888" y="240" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,.9)">→ Vancomycin (not Clinda)</text>
-<text x="888" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,.9)">→ Postpartum endometritis</text>
+<!-- ══ EFFECT BOX ══ -->
+<rect x="882" y="190" width="204" height="124" rx="10" fill="#0f2444"/>
+<text x="984" y="222" text-anchor="middle" font-family="Crimson Pro,serif" font-size="15" font-weight="700" fill="white">Missing GBS</text>
+<text x="984" y="242" text-anchor="middle" font-family="Crimson Pro,serif" font-size="15" font-weight="700" fill="white">Susceptibilities</text>
+<line x1="912" y1="256" x2="1056" y2="256" stroke="rgba(200,146,42,.4)" stroke-width="1"/>
+<text x="984" y="274" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,.9)">→ Vancomycin (not clinda)</text>
+<text x="984" y="291" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(200,146,42,.9)">→ Postpartum endometritis</text>
 
-<!-- CAT 1: EMR / ORDER (top-left) -->
-<line x1="162" y1="210" x2="80" y2="92" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="18" y="62" width="116" height="28" rx="6" fill="#1a3a6e"/>
-<text x="76" y="81" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">EMR / Order</text>
-<line x1="134" y1="170" x2="86" y2="132" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="82" y="130" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Order placed correctly</text>
-<line x1="114" y1="190" x2="62" y2="158" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="58" y="156" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">"PCN allergy" entered in field</text>
-<line x1="148" y1="152" x2="96" y2="108" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="92" y="106" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">Cerner text truncation?</text>
+<!-- ════════════════════════════════════
+     TOP-LEFT COLUMN: EMR / Order
+     Column center x=145, spine attach x=218
+     Causes: y=88,110,132  Major bone base y=148 → spine y=252
+════════════════════════════════════ -->
+<!-- Category badge -->
+<rect x="53" y="26" width="184" height="32" rx="16" fill="#1a3a6e"/>
+<text x="145" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">EMR / Order</text>
+<!-- Cause 1 — green (this was done right) -->
+<text x="145" y="78" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#1a5c38" font-weight="600">Order placed correctly ✓</text>
+<!-- Cause 2 — green -->
+<text x="145" y="98" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#1a5c38" font-weight="600">"PCN allergy" entered in field ✓</text>
+<!-- Cause 3 — red warning -->
+<text x="145" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c" font-weight="600">Cerner field truncation? (TBD)</text>
+<!-- Major bone: from (145,130) to spine attach (218,252) -->
+<line x1="145" y1="132" x2="218" y2="250" stroke="#1a3a6e" stroke-width="2.5"/>
+<!-- Spine dot -->
+<circle cx="218" cy="252" r="5" fill="#1a3a6e"/>
 
-<!-- CAT 2: LABORATORY (top, second from left) — RED to emphasize this is primary cause -->
-<line x1="348" y1="210" x2="268" y2="78" stroke="#b82c2c" stroke-width="2.5"/>
-<rect x="214" y="50" width="106" height="28" rx="6" fill="#b82c2c"/>
-<text x="267" y="69" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Laboratory ★</text>
-<line x1="314" y1="170" x2="256" y2="126" stroke="#b82c2c" stroke-width="1.4"/>
-<text x="252" y="124" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">Testing not performed</text>
-<line x1="330" y1="190" x2="270" y2="104" stroke="#b82c2c" stroke-width="1.4"/>
-<text x="266" y="102" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#b82c2c" font-weight="600">Root cause pending (AM follow-up)</text>
-<line x1="298" y1="150" x2="248" y2="145" stroke="#b82c2c" stroke-width="1.4"/>
-<text x="244" y="143" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#4a5c7a">No internal QC or notification</text>
+<!-- ════════════════════════════════════
+     TOP-CENTER COLUMN: Laboratory ★  (PRIMARY)
+     Column center x=415, spine attach x=415
+     Causes: y=88,110,132  Major bone base y=148 → spine y=252
+════════════════════════════════════ -->
+<rect x="320" y="26" width="190" height="32" rx="16" fill="#b82c2c"/>
+<text x="415" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Laboratory  ★ PRIMARY</text>
+<text x="415" y="78" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c" font-weight="700">Testing not performed</text>
+<text x="415" y="98" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c" font-weight="700">No internal QC / notification</text>
+<text x="415" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#b82c2c" font-weight="600">Root cause: AM follow-up pending</text>
+<!-- Major bone: straight down -->
+<line x1="415" y1="132" x2="415" y2="250" stroke="#b82c2c" stroke-width="2.5"/>
+<circle cx="415" cy="252" r="5" fill="#b82c2c"/>
 
-<!-- CAT 3: COMMUNICATION (top-right) -->
-<line x1="538" y1="210" x2="610" y2="76" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="584" y="48" width="148" height="28" rx="6" fill="#1a3a6e"/>
-<text x="658" y="67" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Communication</text>
-<line x1="560" y1="178" x2="596" y2="134" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="600" y="132" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No lab → clinic notification</text>
-<line x1="548" y1="194" x2="588" y2="152" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="592" y="150" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Result reviewed without flag</text>
-<line x1="566" y1="162" x2="604" y2="108" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="608" y="106" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Gap found at admission only</text>
+<!-- ════════════════════════════════════
+     TOP-RIGHT COLUMN: Communication
+     Column center x=685, spine attach x=620
+     Major bone from (685,132) to (620,252)
+════════════════════════════════════ -->
+<rect x="598" y="26" width="174" height="32" rx="16" fill="#1a3a6e"/>
+<text x="685" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Communication</text>
+<text x="685" y="78" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">No lab → clinic callback</text>
+<text x="685" y="98" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">Result returned without alert</text>
+<text x="685" y="118" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">Gap found only at admission</text>
+<!-- Major bone -->
+<line x1="685" y1="132" x2="622" y2="250" stroke="#1a3a6e" stroke-width="2.5"/>
+<circle cx="622" cy="252" r="5" fill="#1a3a6e"/>
 
-<!-- CAT 4: PRENATAL FOLLOW-UP (bottom-left) -->
-<line x1="244" y1="210" x2="166" y2="338" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="64" y="342" width="154" height="28" rx="6" fill="#1a3a6e"/>
-<text x="141" y="361" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Prenatal Follow-up</text>
-<line x1="220" y1="238" x2="180" y2="272" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="176" y="270" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">Result not verified at next visit</text>
-<line x1="231" y1="256" x2="187" y2="292" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="183" y="290" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No allergy-patient checklist</text>
+<!-- ════════════════════════════════════
+     BOTTOM-LEFT COLUMN: Prenatal Follow-up
+     Column center x=255, spine attach x=310
+     Major bone from (255,372) to (310,254)
+     Causes: y=380,402
+════════════════════════════════════ -->
+<!-- Major bone -->
+<line x1="255" y1="370" x2="308" y2="254" stroke="#1a3a6e" stroke-width="2.5"/>
+<circle cx="308" cy="254" r="5" fill="#1a3a6e"/>
+<!-- Causes -->
+<text x="255" y="386" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">Result not verified at prenatal visit</text>
+<text x="255" y="408" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">No PCN-allergy prenatal checklist</text>
+<!-- Category badge -->
+<rect x="130" y="422" width="250" height="32" rx="16" fill="#1a3a6e"/>
+<text x="255" y="443" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">Prenatal Follow-up</text>
 
-<!-- CAT 5: SYSTEM / EMR ALERTS (bottom-right) -->
-<line x1="456" y1="210" x2="538" y2="338" stroke="#1a3a6e" stroke-width="2.5"/>
-<rect x="512" y="342" width="138" height="28" rx="6" fill="#1a3a6e"/>
-<text x="581" y="361" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">System Gaps</text>
-<line x1="477" y1="240" x2="516" y2="274" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="520" y="272" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No missing-result EMR alert</text>
-<line x1="466" y1="256" x2="508" y2="294" stroke="#4a5c7a" stroke-width="1.4"/>
-<text x="512" y="292" font-family="DM Sans,sans-serif" font-size="11" fill="#1a1a2e">No auto-flag for PCN-allergic GBS+</text>
+<!-- ════════════════════════════════════
+     BOTTOM-RIGHT COLUMN: System Gaps
+     Column center x=590, spine attach x=540
+     Major bone from (590,372) to (540,254)
+════════════════════════════════════ -->
+<line x1="590" y1="370" x2="542" y2="254" stroke="#1a3a6e" stroke-width="2.5"/>
+<circle cx="542" cy="254" r="5" fill="#1a3a6e"/>
+<text x="590" y="386" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">No missing-result EMR alert</text>
+<text x="590" y="408" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#141824">No auto-flag: PCN-allergic GBS+</text>
+<rect x="482" y="422" width="216" height="32" rx="16" fill="#1a3a6e"/>
+<text x="590" y="443" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="700" fill="white">System Gaps</text>
 ```
 
   </svg>
